@@ -1,0 +1,180 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 30px;
+}
+
+h3 {
+    margin-bottom: 15px;
+}
+
+a {
+    text-decoration: none;
+    color: #0066cc;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ===== TABLE FIX ===== */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    table-layout: fixed;          /* 🔑 แก้คอลัมน์เลื่อน */
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+    word-wrap: break-word;        /* 🔑 กันข้อความยาวดัน */
+    overflow-wrap: break-word;
+}
+
+th {
+    background: #2c3e50;
+    color: #fff;
+    text-align: left;
+}
+
+tr:hover {
+    background: #f1f1f1;
+}
+
+/* กำหนดความกว้างแต่ละคอลัมน์ */
+th:nth-child(1), td:nth-child(1) { width: 60px; }
+th:nth-child(2), td:nth-child(2) { width: 120px; }
+th:nth-child(3), td:nth-child(3) { width: 120px; }
+th:nth-child(4), td:nth-child(4) { width: 200px; }
+th:nth-child(5), td:nth-child(5) { width: 200px; }
+th:nth-child(6), td:nth-child(6) { width: 200px; }
+th:nth-child(7), td:nth-child(7) { width: 90px; }
+th:nth-child(8), td:nth-child(8) { width: 120px; }
+
+/* รูป */
+img {
+    max-width: 80px;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+}
+
+/* ===== FORM ===== */
+form {
+    background: #fff;
+    padding: 20px;
+    width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input[type=text],
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+textarea {
+    resize: vertical;
+    height: 80px;
+}
+
+input[type=file] {
+    margin-top: 5px;
+}
+
+input[type=text]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #2c3e50;
+    box-shadow: 0 0 5px rgba(44,62,80,0.4);
+}
+
+/* ===== BUTTON ===== */
+button {
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+button:hover {
+    background: #1a252f;
+}
+
+/* ===== STATUS ===== */
+.status-show {
+    color: green;
+    font-weight: bold;
+}
+
+.status-hide {
+    color: red;
+    font-weight: bold;
+}
+
+.top-bar {
+    margin-bottom: 15px;
+}
+/* ===== จัดแนวคอลัมน์ รูป / สถานะ / จัดการ ===== */
+th:nth-child(7),
+td:nth-child(7),
+th:nth-child(8),
+td:nth-child(8),
+th:nth-child(9),
+td:nth-child(9) {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* รูปให้อยู่กลางช่อง */
+td img {
+    display: block;
+    margin: 0 auto;
+    max-width: 70px;
+    height: auto;
+}
+
+/* ปุ่มจัดการให้อยู่บรรทัดเดียว */
+td:last-child a {
+    margin: 0 4px;
+    white-space: nowrap;
+}
+
+/* สถานะไม่ให้ตกบรรทัด */
+.status-show,
+.status-hide {
+    white-space: nowrap;
+}
+
+form a {
+    display: inline-block;
+    margin-left: 10px;
+    color: #555;
+}
+
+form a:hover {
+    color: #000;
+}
+.thumb-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%; /* ขยับโฟกัสขึ้นไปด้านบนนิดหน่อย เผื่อเห็นหัวแมวชัดขึ้น */
+}
