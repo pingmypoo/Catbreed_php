@@ -1,10 +1,41 @@
 <?php
+session_start();
 include 'db.php';
-// ดึงข้อมูลแมว และดึงรูปแรกสุดมาเป็นรูปหน้าปก
+
+$error = "";
+
+/* ===== LOGIN ===== */
+if(isset($_POST['login'])){
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $sqlUser = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    $resultUser = mysqli_query($conn, $sqlUser);
+
+    if(mysqli_num_rows($resultUser) == 1){
+        $user = mysqli_fetch_assoc($resultUser);
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+        header("Location: index.php");
+        exit();
+    }else{
+        $error = "Username หรือ Password ไม่ถูกต้อง";
+    }
+}
+
+/* ===== LOGOUT ===== */
+if(isset($_GET['logout'])){
+    session_destroy();
+    header("Location: index.php");
+    exit();
+}
+
+/* ===== QUERY CAT ===== */
 $sql = "SELECT b.*, (SELECT image_url FROM CatImages WHERE cat_id = b.id LIMIT 1) as thumb 
         FROM CatBreeds b WHERE is_visible = 1 ORDER BY b.id DESC";
 $result = mysqli_query($conn, $sql);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="th">
@@ -206,11 +237,38 @@ $result = mysqli_query($conn, $sql);
     </style>
 </head>
 <body>
+<!-- NAVBAR -->
+<div style="display:flex; justify-content:space-between; align-items:center; padding:20px 40px;">
+    
+    <div>
+        <?php if(isset($_SESSION['role']) && $_SESSION['role'] == 'admin'): ?>
+            <a href="management.php" 
+               style="background:#6c5ce7;color:white;padding:10px 18px;border-radius:8px;text-decoration:none;">
+               Management
+            </a>
+        <?php endif; ?>
+    </div>
+
+    <div>
+        <?php if(isset($_SESSION['username'])): ?>
+            <span style="margin-right:15px;">👤 <?= $_SESSION['username']; ?></span>
+            <a href="?logout=true"
+               style="background:#d63031;color:white;padding:10px 18px;border-radius:8px;text-decoration:none;">
+               Logout
+            </a>
+        <?php else: ?>
+            <button onclick="openLogin()"
+                style="background:#6c5ce7;color:white;padding:10px 18px;border-radius:8px;border:none;cursor:pointer;">
+                Login
+            </button>
+        <?php endif; ?>
+    </div>
+</div>
 
 <div class="container">
     <div class="header-section">
-        <h1>Cat Breeds World</h1>
-        <p>สารานุกรมแมวเหมียวฉบับสมบูรณ์ พร้อมรูปภาพหลายมุมมอง</p>
+        <h1>Cat Breeds .PHP</h1>
+        <p>สารานุกรมแมวเหมียวฉบับสมบูรณ์</p>
     </div>
 
     <div class="cat-grid">
@@ -235,13 +293,12 @@ $result = mysqli_query($conn, $sql);
         <div id="modalData">กำลังโหลดข้อมูลสุดน่ารัก...</div>
     </div>
 </div>
-
 <script>
 function openCatDetail(id) {
     const modal = document.getElementById('catModal');
     const content = document.getElementById('modalData');
     modal.style.display = "block";
-    document.body.style.overflow = "hidden"; // ล็อกการสกロールหน้าหลัก
+    document.body.style.overflow = "hidden";
 
     fetch('get_detail.php?id=' + id)
         .then(response => response.text())
@@ -255,9 +312,54 @@ function closeModal() {
     document.body.style.overflow = "auto";
 }
 
+function openLogin() {
+    document.getElementById("loginModal").style.display = "block";
+    document.body.style.overflow = "hidden";
+}
+
+function closeLogin() {
+    document.getElementById("loginModal").style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+/* ปิด modal เมื่อคลิกพื้นหลัง */
 window.onclick = function(event) {
-    if (event.target == document.getElementById('catModal')) closeModal();
+    if (event.target.id === "catModal") {
+        closeModal();
+    }
+    if (event.target.id === "loginModal") {
+        closeLogin();
+    }
 }
 </script>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+    <div class="modal-content" style="max-width:400px;">
+        <span class="close-btn" onclick="closeLogin()">&times;</span>
+        <h2 style="margin-bottom:20px;">Login</h2>
+
+        <?php if($error != "") echo "<p style='color:red;'>$error</p>"; ?>
+
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required
+                style="width:100%;padding:10px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;">
+
+            <input type="password" name="password" placeholder="Password" required
+                style="width:100%;padding:10px;margin-bottom:20px;border-radius:8px;border:1px solid #ccc;">
+
+            <button type="submit" name="login"
+                style="width:100%;background:#6c5ce7;color:white;padding:12px;border:none;border-radius:10px;">
+                Login
+            </button>
+        </form>
+    </div>
+</div>
+<?php if($error != ""): ?>
+<script>
+    openLogin();
+</script>
+<?php endif; ?>
+
 </body>
 </html>
